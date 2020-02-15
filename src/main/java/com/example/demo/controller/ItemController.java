@@ -36,10 +36,7 @@ public class ItemController {
     @GetMapping("/{id}")
     public ResponseEntity<Item> getItem(@PathVariable("id") final Long id) {
 
-        Optional<Item> oItem = itemService.getItemById(id);
-        Item item = oItem.orElseThrow(()
-                -> new ItemNotFoundException("Item not found: " + id));
-
+        Item item = itemService.getItemById(id);
         return new ResponseEntity<>(item, HttpStatus.OK);
     }
 
@@ -72,21 +69,15 @@ public class ItemController {
     public ResponseEntity<String> updateItem(@PathVariable("id") final Long id,
                                              @RequestBody Item updateItem) {
 
+        // 1 Verify item to update
         final Item verifiedItem = Optional.of(updateItem)
                 .filter(i -> i.getName() != null)
                 .filter(i -> i.getAmount() > 0)
                 .filter(i -> i.getPrice() > 0)
                 .orElseThrow(() -> new CreateItemException("Valid item data"));
 
-        itemService.getItemById(id)
-                .map(item -> {
-                    item.setName(verifiedItem.getName());
-                    item.setAmount(verifiedItem.getAmount());
-                    item.setPrice(verifiedItem.getPrice());
-                    return itemService.updateItem(item);
-                })
-                .orElseThrow(() -> new ItemNotFoundException("Item not found: " + id));
 
+        itemService.updateItem(id, verifiedItem);
         return new ResponseEntity<>("Item Updated", HttpStatus.OK);
     }
 
@@ -102,5 +93,13 @@ public class ItemController {
     @GetMapping("/count")
     public ResponseEntity<Integer> countItems() {
         return new ResponseEntity<>(itemService.countItems(), HttpStatus.OK);
+    }
+
+    @PutMapping("/discount/{name}")
+    public ResponseEntity<String> discountForItem(@PathVariable("name") String name,
+                                                  @RequestParam(value = "percent", defaultValue = "0") int percent) {
+
+        Optional<Item> oItem = itemService.getItemByName(name);
+        return null;
     }
 }

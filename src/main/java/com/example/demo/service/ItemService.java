@@ -9,15 +9,17 @@ public interface ItemService {
 
     List<Item> getItems();
 
-    Optional<Item> getItemById(Long id);
+    Item getItemById(Long id);
 
     Optional<Item> getItemByName(String name);
 
     Optional<Item> createItem(Item item);
 
-    Item updateItem(Item item);
+    Item updateItem(Long id, Item item);
 
     boolean deleteItemById(Long id);
 
     Integer countItems();
+
+    Double discountForItem(Long id);
 }

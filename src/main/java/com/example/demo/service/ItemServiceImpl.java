@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.exception.ItemNotFoundException;
 import com.example.demo.model.response.Item;
 import com.example.demo.repository.ItemRepository;
 import org.slf4j.Logger;
@@ -27,8 +28,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Optional<Item> getItemById(Long id) {
-        return itemRepository.findById(id);
+    public Item getItemById(Long id) {
+
+        return itemRepository.findById(id).orElseThrow(()
+                -> new ItemNotFoundException("Item not found: " + id));
     }
 
     @Override
@@ -46,8 +49,15 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item updateItem(Item item) {
-        return itemRepository.save(item);
+    public Item updateItem(Long id, Item verifiedItem) {
+
+        return itemRepository.findById(id).map(item -> {
+            item.setName(verifiedItem.getName());
+            item.setAmount(verifiedItem.getAmount());
+            item.setPrice(verifiedItem.getPrice());
+            return itemRepository.save(item);
+        })
+            .orElseThrow( () -> new ItemNotFoundException("Item not found: " + id));
     }
 
     @Override
@@ -70,4 +80,10 @@ public class ItemServiceImpl implements ItemService {
                 .mapToInt(Integer::intValue)
                 .sum();
     }
+
+    @Override
+    public Double discountForItem(Long id) {
+        return null;
+    }
+
 }
