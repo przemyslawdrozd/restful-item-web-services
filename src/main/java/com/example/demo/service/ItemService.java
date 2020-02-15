@@ -16,4 +16,8 @@ public interface ItemService {
     Optional<Item> createItem(Item item);
 
     Item updateItem(Item item);
+
+    boolean deleteItemById(Long id);
+
+    Integer countItems();
 }

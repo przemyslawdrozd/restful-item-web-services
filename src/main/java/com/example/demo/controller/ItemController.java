@@ -11,13 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import javax.validation.Valid;
-import javax.validation.constraints.Null;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "/items")
+@RequestMapping("/items")
 public class ItemController {
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
@@ -93,9 +91,16 @@ public class ItemController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteItem(@PathVariable("id") Long id) {
+    public ResponseEntity<String> deleteItem(@PathVariable("id") Long id) {
 
-        // Logic to delete
-        return ResponseEntity.noContent().build();
+        if (!itemService.deleteItemById(id))
+            throw new ItemNotFoundException("Item does not exist");
+
+        return new ResponseEntity<>("Item deleted", HttpStatus.OK);
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<Integer> countItems() {
+        return new ResponseEntity<>(itemService.countItems(), HttpStatus.OK);
     }
 }

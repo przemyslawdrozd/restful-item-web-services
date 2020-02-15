@@ -49,4 +49,25 @@ public class ItemServiceImpl implements ItemService {
     public Item updateItem(Item item) {
         return itemRepository.save(item);
     }
+
+    @Override
+    public boolean deleteItemById(Long id) {
+
+        if (itemRepository.existsById(id)) {
+            itemRepository.deleteById(id);
+            return true;
+        } else {
+            LOG.warn("Item id: {} does not exist", id);
+            return false;
+        }
+    }
+
+    @Override
+    public Integer countItems() {
+
+        return itemRepository.getAllAmount()
+                .stream()
+                .mapToInt(Integer::intValue)
+                .sum();
+    }
 }
