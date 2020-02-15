@@ -46,7 +46,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Optional<Item> updateItemById(Long id, Item item) {
-        return Optional.empty();
+    public Item updateItem(Item item) {
+        return itemRepository.save(item);
     }
 }

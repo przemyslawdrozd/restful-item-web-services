@@ -37,8 +37,8 @@ public class ItemController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Item> getItem(@PathVariable("id") final Long id) {
-        Optional<Item> oItem = itemService.getItemById(id);
 
+        Optional<Item> oItem = itemService.getItemById(id);
         Item item = oItem.orElseThrow(()
                 -> new ItemNotFoundException("Item not found: " + id));
 
@@ -49,7 +49,6 @@ public class ItemController {
     public ResponseEntity<Item> getItemByName(@PathVariable("name") final String name) {
 
         Optional<Item> oItem = itemService.getItemByName(name);
-
         Item item = oItem.orElseThrow(() -> new ItemNotFoundException("Item not found: " + name));
 
         return new ResponseEntity<>(item, HttpStatus.OK);
@@ -60,18 +59,43 @@ public class ItemController {
 
         Item verifiedItem = Optional.of(newItem)
                 .filter(i -> i.getName() != null)
-                .filter(i -> i.getAmount() < 0)
-                .filter(i -> i.getPrice() < 0)
+                .filter(i -> i.getAmount() > 0)
+                .filter(i -> i.getPrice() > 0)
                 .orElseThrow(() -> new CreateItemException("Valid item data"));
+
+        if (itemService.getItemByName(newItem.getName()).isPresent())
+            throw new CreateItemException("This item already exists");
 
         itemService.createItem(verifiedItem);
         return new ResponseEntity<>("New Item Created", HttpStatus.OK);
     }
 
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> deleteItem(@PathVariable("id") Long id) {
-//
-//        // Logic to delete
-//        return ResponseEntity.noContent().build();
-//    }
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateItem(@PathVariable("id") final Long id,
+                                             @RequestBody Item updateItem) {
+
+        final Item verifiedItem = Optional.of(updateItem)
+                .filter(i -> i.getName() != null)
+                .filter(i -> i.getAmount() > 0)
+                .filter(i -> i.getPrice() > 0)
+                .orElseThrow(() -> new CreateItemException("Valid item data"));
+
+        itemService.getItemById(id)
+                .map(item -> {
+                    item.setName(verifiedItem.getName());
+                    item.setAmount(verifiedItem.getAmount());
+                    item.setPrice(verifiedItem.getPrice());
+                    return itemService.updateItem(item);
+                })
+                .orElseThrow(() -> new ItemNotFoundException("Item not found: " + id));
+
+        return new ResponseEntity<>("Item Updated", HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteItem(@PathVariable("id") Long id) {
+
+        // Logic to delete
+        return ResponseEntity.noContent().build();
+    }
 }

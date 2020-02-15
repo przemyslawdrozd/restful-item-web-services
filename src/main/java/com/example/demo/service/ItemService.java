@@ -15,5 +15,5 @@ public interface ItemService {
 
     Optional<Item> createItem(Item item);
 
-    Optional<Item> updateItemById(Long id, Item item);
+    Item updateItem(Item item);
 }

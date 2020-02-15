@@ -19,7 +19,7 @@ import java.util.NoSuchElementException;
 public class ItemExceptionHandler extends ResponseEntityExceptionHandler {
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
-    @ExceptionHandler(value = { ItemNotFoundException.class })
+    @ExceptionHandler(ItemNotFoundException.class)
     public ResponseEntity<Object> handleItemNotFoundException(ItemNotFoundException ex, WebRequest request) {
         LOG.error("Item not found");
         ErrorMessage errorMessage = new ErrorMessage(new Date(), ex.getMessage());
@@ -28,18 +28,20 @@ public class ItemExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(value = { CreateItemException.class })
+    @ExceptionHandler(CreateItemException.class)
         public ResponseEntity<Object> handleANullPointerException(CreateItemException ex, WebRequest request) {
         LOG.error("Invalid data for item");
         ErrorMessage errorMessage = new ErrorMessage(new Date(), ex.getMessage());
+
         return new ResponseEntity<>(errorMessage, new HttpHeaders(),
                 HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(value = { Exception.class })
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleUserDatasourceException(Exception ex, WebRequest request) {
         LOG.error("Item throws exception");
         ErrorMessage errorMessage = new ErrorMessage(new Date(), ex.toString());
+
         return new ResponseEntity<>(errorMessage, new HttpHeaders(),
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
