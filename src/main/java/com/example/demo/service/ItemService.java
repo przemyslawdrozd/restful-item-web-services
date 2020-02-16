@@ -21,5 +21,5 @@ public interface ItemService {
 
     Integer countItems();
 
-    Double discountForItem(Long id);
+    Double discountForItem(String name, Integer percent);
 }

@@ -82,8 +82,15 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Double discountForItem(Long id) {
-        return null;
-    }
+    public Double discountForItem(String name, Integer percent) {
 
+        if (itemRepository.existsByName(name)){
+            Double price = itemRepository.getPrice(name);
+            price -= (price * percent) / 100;
+            itemRepository.changePriceForItem(price, name);
+            return price;
+        } else {
+            throw new ItemNotFoundException("Item not found: " + name);
+        }
+    }
 }

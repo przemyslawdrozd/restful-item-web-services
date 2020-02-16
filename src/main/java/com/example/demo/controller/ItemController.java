@@ -96,10 +96,10 @@ public class ItemController {
     }
 
     @PutMapping("/discount/{name}")
-    public ResponseEntity<String> discountForItem(@PathVariable("name") String name,
+    public ResponseEntity<Double> discountForItem(@PathVariable("name") String name,
                                                   @RequestParam(value = "percent", defaultValue = "0") int percent) {
 
-        Optional<Item> oItem = itemService.getItemByName(name);
-        return null;
+        Double newPrice = itemService.discountForItem(name, percent);
+        return new ResponseEntity<>(newPrice, HttpStatus.OK);
     }
 }
