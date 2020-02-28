@@ -84,6 +84,22 @@ class ItemControllerTest {
     }
 
     @Test
+    void discountForItem() throws Exception {
+
+        when(itemService.discountForItem("Banana", 10)).thenReturn(90.0);
+
+        RequestBuilder request = MockMvcRequestBuilders
+                .put("/items/discount/Banana?percent=10")
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(content().string("90.0"))
+                .andReturn();
+
+    }
+
+    @Test
     void createItem() {
     }
 
@@ -97,9 +113,5 @@ class ItemControllerTest {
 
     @Test
     void countItems() {
-    }
-
-    @Test
-    void discountForItem() {
     }
 }
