@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.exception.ItemNotFoundException;
 import com.example.demo.model.response.Item;
 import com.example.demo.repository.ItemRepository;
 import org.junit.Test;
@@ -44,7 +45,7 @@ public class ItemServiceImplTest {
     }
 
     @Test
-    public void discountForItem() {
+    public void shouldDiscountTenPercent() {
         double expectedDiscount = 9.0;
 
         when(itemRepository.existsByName("name")).thenReturn(true);
@@ -52,7 +53,12 @@ public class ItemServiceImplTest {
 
         Double actualDiscount = itemService.discountForItem("name", 10);
         assertEquals(expectedDiscount, actualDiscount, 1);
+    }
 
+    @Test(expected = ItemNotFoundException.class)
+    public void shouldThrowItemNodFoundForDiscount() {
+        when(itemRepository.existsByName("name")).thenReturn(false);
+        itemService.discountForItem("name", 10);
     }
 
     @Test
