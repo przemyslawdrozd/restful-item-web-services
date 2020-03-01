@@ -62,7 +62,7 @@ public class ItemController {
             throw new CreateItemException("This item already exists");
 
         itemService.createItem(verifiedItem);
-        return new ResponseEntity<>("New Item Created", HttpStatus.OK);
+        return new ResponseEntity<>("New Item Created", HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

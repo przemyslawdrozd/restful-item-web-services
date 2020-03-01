@@ -17,8 +17,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.List;
 import java.util.Optional;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ItemController.class)
@@ -100,7 +99,17 @@ class ItemControllerTest {
     }
 
     @Test
-    void createItem() {
+    void shouldCreateItem() throws Exception {
+
+        RequestBuilder request = MockMvcRequestBuilders
+                .post("/items")
+                .accept(MediaType.APPLICATION_JSON)
+                .content("{\"name\":\"Lemon\",\"price\":1.50,\"amount\":100}")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult result = mockMvc.perform(request)
+                .andExpect(status().isCreated())
+                .andReturn();
     }
 
     @Test
