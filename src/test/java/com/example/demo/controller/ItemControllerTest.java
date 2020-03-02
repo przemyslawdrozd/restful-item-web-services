@@ -156,15 +156,56 @@ class ItemControllerTest {
 
 
     @Test
-    void updateItem() throws Exception {
+    void shouldUpdateItem() throws Exception {
+        this.items.get(1).setId(1003L);
 
+        RequestBuilder request = MockMvcRequestBuilders
+                .put("/items/1003")
+                .accept(MediaType.APPLICATION_JSON)
+                .content("{\"name\":\"Banana\",\"price\":5.00,\"amount\":12}")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult result = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(content().string("Item Updated"))
+                .andReturn();
     }
 
     @Test
-    void deleteItem() {
+    void shouldDeleteItem() throws Exception {
+
+        when(itemService.deleteItemById(1003L)).thenReturn(true);
+
+        RequestBuilder request = MockMvcRequestBuilders
+                .delete("/items/1003");
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(content().string("Item deleted"));
     }
 
     @Test
-    void countItems() {
+    void shouldNotDeleteItem() throws Exception {
+
+
+        RequestBuilder request = MockMvcRequestBuilders
+                .delete("/items/1004");
+
+        mockMvc.perform(request)
+                .andExpect(status().is5xxServerError());
+    }
+
+    @Test
+    void countItems() throws Exception {
+
+        RequestBuilder request = MockMvcRequestBuilders
+                .get("/items/count");
+
+        when(itemService.countItems()).thenReturn(22);
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(content().string("22"));
+
     }
 }
