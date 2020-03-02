@@ -113,7 +113,51 @@ class ItemControllerTest {
     }
 
     @Test
-    void updateItem() {
+    void shouldNotCreateItemWithNoPrice() throws Exception {
+
+        RequestBuilder request = MockMvcRequestBuilders
+                .post("/items")
+                .accept(MediaType.APPLICATION_JSON)
+                .content("{\"name\":\"Lemon\",\"price\":0,\"amount\":100}")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult result = mockMvc.perform(request)
+                .andExpect(status().isBadRequest())
+                .andReturn();
+    }
+
+    @Test
+    void shouldNotCreateItemWithoutName() throws Exception {
+
+        RequestBuilder request = MockMvcRequestBuilders
+                .post("/items")
+                .accept(MediaType.APPLICATION_JSON)
+                .content("{price\":1.10,\"amount\":100}")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult result = mockMvc.perform(request)
+                .andExpect(status().isBadRequest())
+                .andReturn();
+    }
+
+    @Test
+    void shouldNotCreateItemWhenNoAmount() throws Exception {
+
+        RequestBuilder request = MockMvcRequestBuilders
+                .post("/items")
+                .accept(MediaType.APPLICATION_JSON)
+                .content("{\"name\":\"Lemon\",\"price\":0,\"amount\":0}")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult result = mockMvc.perform(request)
+                .andExpect(status().isBadRequest())
+                .andReturn();
+    }
+
+
+    @Test
+    void updateItem() throws Exception {
+
     }
 
     @Test
